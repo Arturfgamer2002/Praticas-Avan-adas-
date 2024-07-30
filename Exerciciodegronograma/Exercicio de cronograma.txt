@@ -1,0 +1,28 @@
+Introdução
+
+Desenvolver um site de musica
+
+
+
+Objetivo
+
+Obter musicas de graça
+
+
+
+
+Público Alvo
+
+Pessoas que não queiram pagar por musica
+
+
+
+
+Solução
+
+Utilizar web scraping para procurar musicas em outros sites
+
+
+
+
+Cronograma.
