@@ -1,47 +1,96 @@
-import Header from "../Header";
-import "../App.css";
-import BotaoVoltar from "../BotaoVoltar";
-import axios from "axios";
 
-//Utilizar para auxiliar no controle de outras funcoes da aplicaçao
-import { useState } from "react";
+import Header from '../Header';
 
-//Criar função cadastro
+import '../App.css';
+
+import BotaoVoltar from '../componentes/BotaoVoltar';
+
+//Utilizada para auxiliar no controle de outras funcoes da aplicacao
+import React, { useState } from 'react';
+
+import axios from 'axios';
+
 function Cadastro() {
-    //Criar novo estado para os campos da tela
+
+    //cria novo estado para os campos da tela
     const [campos, setCampos] = useState({
         nome: '',
         idade: 0,
-        cidade:''
+        cidade: ''
     });
-    
+
     const [mensagem, setMensagem] = useState('');
 
-    function hadleInputChange(event) {
-        campos[event.target.name] = event.target.value;
-        setCampos(campos);
-    };
+    const [erros, setErros] = useState({});
 
-    function hadleFormSubmit(event){
-        event.preventDefault();
-        console.log(campos);
-        axios.post('http://localhost3001/api/usuarios', campos).then(response => {
-            setMensagem('Formulário enviado com sucesso!');
-        })
-        //Mostrar mensagem de confirmacao
-        setMensagem('Formulário enviado com sucesso!');
-
-        //Limpar mensagem após 3 segundos
-        setTimeout(() => {
-            setMensagem('');
-        }, 3000);
+    function handleInputChange(event) {
+        const { name, value } = event.target;
+        setCampos(prevCampos => ({
+            ...prevCampos,
+            [name]: value
+        }));
     }
 
-    return(
+    function validarCampos() {
+        const novosErros = {};
+        
+        if (!campos.nome) {
+            novosErros.nome = 'Nome é obrigatório';
+        }
+
+        if (!campos.idade || campos.idade <= 0) {
+            novosErros.idade = 'Idade deve ser um número positivo';
+        }
+
+        if (!campos.cidade) {
+            novosErros.cidade = 'Cidade é obrigatória';
+        }
+
+        setErros(novosErros);
+        
+        return Object.keys(novosErros).length === 0;
+    }
+
+
+    function handleFormSubmit(event) {
+
+        event.preventDefault();
+
+        if (!validarCampos()) {
+            return;
+        }
+
+        console.log('Submetendo:', campos);
+
+        axios.post('http://localhost:3001/api/usuarios', campos)
+            .then(response => {
+                setMensagem('Formulário enviado com sucesso!');
+                console.log(response.data);
+
+                // Limpar os campos do formulário após o envio
+                setCampos({
+                    nome: '',
+                    idade: 0,
+                    cidade: ''
+                });
+
+                // Limpar mensagem após 3 segundos
+                setTimeout(() => {
+                    setMensagem('');
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Houve um erro ao enviar o formulário:', error);
+                setMensagem('Erro ao enviar o formulário. Tente novamente.');
+            });
+    }
+
+    return (
         <div className="App">
-           <Header title="Formula de Cadastro"/>
-            
-            <form onSubmit={hadleFormSubmit}>
+            <Header title="Formulario de Cadastro" />
+
+            <div className="form-container">
+            <form onSubmit={handleFormSubmit}>
                 <fieldset>
                     <legend>
                         <h2>Dados de Cadastro</h2>
@@ -49,30 +98,35 @@ function Cadastro() {
 
                     <div>
                         <label>Nome:
-                            <input type="text" name="nome" id="nome" onSubmit={hadleInputChange}/>
+                            <input type="text" name="nome" id="nome" value={campos.nome} onChange={handleInputChange}/>
+                            {erros.nome && <p className="error">{erros.nome}</p>}
                         </label>
                     </div>
 
                     <div>
                         <label>Idade:
-                            <input type="number" name="idade" id="idade" onSubmit={hadleInputChange}/>
+                            <input type="number" name="idade" id="idade" value={campos.idade}  onChange={handleInputChange}/>
+                            {erros.idade && <p className="error">{erros.idade}</p>}
                         </label>
                     </div>
 
                     <div>
                         <label>Cidade:
-                            <input type="text" name="cidade" id="cidade" onSubmit={hadleInputChange}/>
+                            <input type="text" name="cidade" id="cidade" value={campos.cidade}  onChange={handleInputChange}/>
+                            {erros.cidade && <p className="error">{erros.cidade}</p>}
                         </label>
                     </div>
-                    
-                    <import type="submit" value="Salvar"/>
+
+                    <input type="submit" value="Salvar" />
                 </fieldset>
             </form>
-            
+            {mensagem && <p>{mensagem}</p>}
             <BotaoVoltar></BotaoVoltar>
+            </div>
+    
 
         </div>
-    );
+    )
 }
 
 export default Cadastro;

@@ -1,21 +1,25 @@
+ 
+
 import React from 'react';
 
-//Importar 3 objetos de lib
-import {Route, Routes, BrowserRouter } from 'react-router-dom';
-
-//Importar a página Home
+//importa 3 objetos da lib 
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
+ 
+//Importa a página Home
 import Home from '../Paginas/Home';
 
-//Importar a página Cadastro
+//Importa a página Cadastro
 import Cadastro from '../Paginas/Cadastro';
-
+import ListaRegistros from '../Paginas/ListaRegistros';
+ 
 function Rotas() {
     return (
         <BrowserRouter>
-        <Routes>
-            <Route element={<Home />} path='/' exact Component={Home}/>
-            <Route element={<Cadastro />} path='/cadastro' Component={Cadastro}/>
-        </Routes>
+            <Routes>
+                <Route element={<Home />} path="/" exact component={Home}/>
+                <Route element={<Cadastro />} path="/cadastro" component={Cadastro} />
+                <Route element={<ListaRegistros />} path="/lista" component={ListaRegistros} />
+            </Routes>
         </BrowserRouter>
     )
 }
